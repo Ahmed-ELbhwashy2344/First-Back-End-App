@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 // app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.post('/webhook', express.raw({type: 'application/json'}), createOnlineOrder);
+app.post('/api/v1/webhook', express.raw({type: 'application/json'}), createOnlineOrder);
 app.use(express.json());
 app.use(express.static("uploads"));
 app.use(morgan("dev"));
