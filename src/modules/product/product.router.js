@@ -14,7 +14,7 @@ productRouter
   .post(
     protectedRoutes,
     allowedTo("admin", 'user'),
-    uploadArrayOfFiles(fieldsArray, "product"),
+    uploadArrayOfFiles(fieldsArray),
     validation(productSchema.createProductSchema),
     Product.createProduct,
   )

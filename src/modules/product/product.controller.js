@@ -3,12 +3,49 @@ import { AppError } from "../../utils/appError.js";
 import { catchAsyncError } from "../../middleware/catchAsyncError.js";
 import { productModel } from "../../../database/models/products.model.js";
 import { APIFeatures } from "../../utils/APIFeatures.js";
+import cloudinary from "../../utils/cloudinary.js";
+
+// export const createProduct = catchAsyncError(async (req, res) => {
+//   req.body.slug = slugify(req.body.title);
+//   req.body.imgCover= req.files.imgCover[0].filename
+//   req.body.images= req.files.images.map(obj=> obj.filename)
+  
+//   let result = new productModel(req.body);
+//   await result.save();
+//   res.json({ message: "success", result });
+// });
 
 export const createProduct = catchAsyncError(async (req, res) => {
   req.body.slug = slugify(req.body.title);
-  req.body.imgCover= req.files.imgCover[0].filename
-  req.body.images= req.files.images.map(obj=> obj.filename)
-  
+
+  // 1. رفع الصورة الرئيسية (imgCover)
+  if (req.files?.imgCover) {
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "products" },
+        (error, res) => { if (res) resolve(res); else reject(error); }
+      );
+      stream.end(req.files.imgCover[0].buffer);
+    });
+    req.body.imgCover = result.secure_url; // حفظ لينك Cloudinary بدل اسم الملف
+  }
+
+  // 2. رفع مصفوفة الصور (images)
+  if (req.files?.images) {
+    req.body.images = await Promise.all(
+      req.files.images.map(async (file) => {
+        const result = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: "products" },
+            (error, res) => { if (res) resolve(res); else reject(error); }
+          );
+          stream.end(file.buffer);
+        });
+        return result.secure_url;
+      })
+    );
+  }
+
   let result = new productModel(req.body);
   await result.save();
   res.json({ message: "success", result });
