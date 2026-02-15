@@ -3,6 +3,7 @@ import { AppError } from "../../utils/appError.js";
 import { catchAsyncError } from "../../middleware/catchAsyncError.js";
 import { brandModel } from "../../../database/models/brand.model.js";
 import { APIFeatures } from "../../utils/APIFeatures.js";
+import cloudinary from "../../utils/cloudinary.js";
 
 // export const createBrand = catchAsyncError(async (req, res) => {
 //   req.body.slug = slugify(req.body.name);
