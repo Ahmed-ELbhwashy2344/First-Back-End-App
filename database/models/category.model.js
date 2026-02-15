@@ -20,8 +20,8 @@ const categorySchema = mongoose.Schema(
     timestamps: true,
   },
 );
-categorySchema.post("init", (doc) => {
- if(doc.image) doc.image = process.env.IMAGR_URL + "/category/" + doc.image;
-});
+// categorySchema.post("init", (doc) => {
+//  if(doc.image) doc.image = process.env.IMAGR_URL + "/category/" + doc.image;
+// });
 /** @type {import('mongoose').Model} */
 export const categoryModel = mongoose.model("category", categorySchema);

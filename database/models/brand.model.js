@@ -20,8 +20,8 @@ const brandSchema = mongoose.Schema(
     timestamps: true,
   },
 );
-brandSchema.post("init", (doc) => {
-  if (doc.logo) doc.logo = process.env.IMAGR_URL + "/brand/" + doc.logo;
-});
+// brandSchema.post("init", (doc) => {
+//   if (doc.logo) doc.logo = process.env.IMAGR_URL + "/brand/" + doc.logo;
+// });
 /** @type {import('mongoose').Model} */
 export const brandModel = mongoose.model("brand", brandSchema);

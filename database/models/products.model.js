@@ -82,15 +82,15 @@ const productSchema = mongoose.Schema(
 //     (path) => process.env.IMAGR_URL + "/product/" + path,
 //   );
 // });
-productSchema.post("init", (doc) => {
-  if (doc.imgCover)
-    doc.imgCover = process.env.IMAGR_URL + "/product/" + doc.imgCover;
-  if (doc.images && Array.isArray(doc.images)) {
-    doc.images = doc.images.map(
-      (path) => process.env.IMAGR_URL + "/product/" + path,
-    );
-  }
-});
+// productSchema.post("init", (doc) => {
+//   if (doc.imgCover)
+//     doc.imgCover = process.env.IMAGR_URL + "/product/" + doc.imgCover;
+//   if (doc.images && Array.isArray(doc.images)) {
+//     doc.images = doc.images.map(
+//       (path) => process.env.IMAGR_URL + "/product/" + path,
+//     );
+//   }
+// });
 productSchema.virtual("myReviews", {
   ref: "review",
   localField: "_id",
