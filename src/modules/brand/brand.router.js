@@ -15,7 +15,7 @@ brandRouter.use("/:brandId/products", productRouter);
 brandRouter
   .route("/")
   .post(
-    uploadSingleFile("logo", "brand"),
+    uploadSingleFile("logo"),
     validation(createBrandySchema),
     brand.createBrand,
   )
@@ -24,7 +24,7 @@ brandRouter
   .route("/:id")
   .get(validation(getAndDeleteBrandySchema), brand.getBrand)
   .put(
-    uploadSingleFile("logo", "brand"),
+    uploadSingleFile("logo"),
     validation(updateBrandySchema),
     brand.updateBrand,
   )

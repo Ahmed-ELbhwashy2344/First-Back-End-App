@@ -14,7 +14,7 @@ categoryRouter.use("/:categoryId/subcategories", subCategoryRouter);
 categoryRouter
   .route("/")
   .post(
-    uploadSingleFile("image", "category"),
+    uploadSingleFile("image"),
     validation(createCategorySchema),
     Category.createCategory,
   )
@@ -23,7 +23,7 @@ categoryRouter
   .route("/:id")
   .get(validation(getAndDeleteCategorySchema), Category.getCategory)
   .put(
-    uploadSingleFile("image", "category"),
+    uploadSingleFile("image"),
     validation(updateCategorySchema),
     Category.updateCategory,
   )

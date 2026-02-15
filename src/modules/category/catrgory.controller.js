@@ -3,10 +3,31 @@ import slugify from "slugify";
 import { AppError } from "../../utils/appError.js";
 import { catchAsyncError } from "../../middleware/catchAsyncError.js";
 import { APIFeatures } from "../../utils/APIFeatures.js";
+import cloudinary from "../../utils/cloudinary.js";
+
+// export const createCategory = catchAsyncError(async (req, res) => {
+//   req.body.slug = slugify(req.body.name);
+//   req.body.image = req.file.filename;
+//   let result = new categoryModel(req.body);
+//   await result.save();
+//   res.json({ message: "success", result });
+// });
 
 export const createCategory = catchAsyncError(async (req, res) => {
   req.body.slug = slugify(req.body.name);
-  req.body.image = req.file.filename;
+
+  // رفع الصورة لو موجودة
+  if (req.file) {
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "categories" }, // فولدر مخصص للكاتيجوري في كلاوديناري
+        (error, res) => { if (res) resolve(res); else reject(error); }
+      );
+      stream.end(req.file.buffer);
+    });
+    req.body.image = result.secure_url;
+  }
+
   let result = new categoryModel(req.body);
   await result.save();
   res.json({ message: "success", result });

@@ -4,11 +4,34 @@ import { catchAsyncError } from "../../middleware/catchAsyncError.js";
 import { brandModel } from "../../../database/models/brand.model.js";
 import { APIFeatures } from "../../utils/APIFeatures.js";
 
+// export const createBrand = catchAsyncError(async (req, res) => {
+//   req.body.slug = slugify(req.body.name);
+//   req.body.logo = req.file.filename;
+//   let result = new brandModel(req.body);
+//   await result.save();
+//   res.json({ message: "success", result });
+// });
+
 export const createBrand = catchAsyncError(async (req, res) => {
   req.body.slug = slugify(req.body.name);
-  req.body.logo = req.file.filename;
-  
- 
+
+  // التأكد إن فيه صورة (لو البراند بيطلب logo أو image)
+  if (req.file) {
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "brands" }, // فولدر البراندات في كلاوديناري
+        (error, res) => { 
+            if (res) resolve(res); 
+            else reject(error); 
+        }
+      );
+      stream.end(req.file.buffer); // نرسل الـ Buffer اللي جاي من Multer
+    });
+    
+    // حفظ رابط الصورة اللي رجع من كلاوديناري
+    req.body.logo = result.secure_url; 
+  }
+
   let result = new brandModel(req.body);
   await result.save();
   res.json({ message: "success", result });
